@@ -1,0 +1,12 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/sanjay/Documents/GitHub/yolanda/chap-5/tcp_server.c
+lib/common.h
+/Users/sanjay/Documents/GitHub/yolanda/chap-5/lib/common.h
+

@@ -88,6 +88,7 @@ size_t read_message(int fd, char *buffer, size_t length) {
     msg_length = ntohl(msg_length);
 
     rc = readn(fd, (char *) &msg_type, sizeof(msg_type));
+    // 这里并不判断是否类型是1，而是判断是否为4个字节
     if (rc != sizeof(u_int32_t))
         return rc < 0 ? -1 : 0;
 

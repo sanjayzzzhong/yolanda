@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
 
     bzero(&client_addr, sizeof(client_addr));        /* bind an address for us */
     client_addr.sun_family = AF_LOCAL;
-    strcpy(client_addr.sun_path, tmpnam(NULL));
+    strcpy(client_addr.sun_path, tmpnam(NULL)); 
 
     if (bind(sockfd, (struct sockaddr *) &client_addr, sizeof(client_addr)) < 0) {
         error(1, errno, "bind failed");
