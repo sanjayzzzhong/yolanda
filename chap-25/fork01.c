@@ -42,12 +42,14 @@ void child_run(int fd) {
 
 
 void sigchld_handler(int sig) {
+    // 如果有子进程信号过来，回收， WNOHANG表示不阻塞
     while (waitpid(-1, 0, WNOHANG) > 0);
     return;
 }
 
 int main(int c, char **v) {
     int listener_fd = tcp_server_listen(SERV_PORT);
+    // 注册子进程信号回收函数
     signal(SIGCHLD, sigchld_handler);
     while (1) {
         struct sockaddr_storage ss;
