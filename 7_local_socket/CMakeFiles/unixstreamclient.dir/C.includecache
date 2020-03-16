@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/sanjay/Documents/GitHub/yolanda/7_local_socket/unixstreamclient.c
+../header/common.h
+/Users/sanjay/Documents/GitHub/yolanda/header/common.h
+
+/Users/sanjay/Documents/GitHub/yolanda/header/common.h
+stdio.h
+-
+stdlib.h
+-
+unistd.h
+-
+string.h
+-
+signal.h
+-
+sys/types.h
+-
+sys/socket.h
+-
+netinet/in.h
+-
+arpa/inet.h
+-
+errno.h
+-
+sys/un.h
+-
+

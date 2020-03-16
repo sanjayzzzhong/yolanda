@@ -1,0 +1,6 @@
+/Users/sanjay/Documents/GitHub/yolanda/7_local_socket/CMakeFiles/rebuild_cache.dir
+/Users/sanjay/Documents/GitHub/yolanda/7_local_socket/CMakeFiles/unixdataserver.dir
+/Users/sanjay/Documents/GitHub/yolanda/7_local_socket/CMakeFiles/edit_cache.dir
+/Users/sanjay/Documents/GitHub/yolanda/7_local_socket/CMakeFiles/unixstreamserver.dir
+/Users/sanjay/Documents/GitHub/yolanda/7_local_socket/CMakeFiles/unixdataclient.dir
+/Users/sanjay/Documents/GitHub/yolanda/7_local_socket/CMakeFiles/unixstreamclient.dir
