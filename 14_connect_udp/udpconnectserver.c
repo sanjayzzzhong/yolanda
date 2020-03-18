@@ -1,13 +1,7 @@
-//
-// Created by shengym on 2019-07-13.
-//
 
-//
-// Created by shengym on 2019-07-07.
-//
+#include "../header/common.h"
 
-#include "lib/common.h"
-
+// count 会默认初始化为0
 static int count;
 
 static void recvfrom_int(int signo) {
@@ -31,22 +25,26 @@ int main(int argc, char **argv) {
     socklen_t client_len;
     char message[MAXLINE];
     message[0] = 0;
-    count = 0;
+    // count = 0;
 
+    // 如果收到中断信号，调用recvfron_int
     signal(SIGINT, recvfrom_int);
 
     struct sockaddr_in client_addr;
     client_len = sizeof(client_addr);
 
+    // recvfrom的同时，获取客户端的地址
     int n = recvfrom(socket_fd, message, MAXLINE, 0, (struct sockaddr *) &client_addr, &client_len);
     if (n < 0) {
-        error(1, errno, "recvfrom failed");
+        perror("recvfrom failed");
+        exit(1);
     }
     message[n] = 0;
     printf("received %d bytes: %s\n", n, message);
 
     if (connect(socket_fd, (struct sockaddr *) &client_addr, client_len)) {
-        error(1, errno, "connect failed");
+        perror("connect failed");
+        exit(1);
     }
 
     while (strncmp(message, "goodbye", 7) != 0) {
@@ -55,15 +53,16 @@ int main(int argc, char **argv) {
 
         size_t rt = send(socket_fd, send_line, strlen(send_line), 0);
         if (rt < 0) {
-            error(1, errno, "send failed ");
+            perror("send failed ");
+            exit(1);
         }
         printf("send bytes: %zu \n", rt);
 
         size_t rc = recv(socket_fd, message, MAXLINE, 0);
         if (rc < 0) {
-            error(1, errno, "recv failed");
+            perror("recv failed");
+            exit(1);
         }
-
         count++;
     }
 

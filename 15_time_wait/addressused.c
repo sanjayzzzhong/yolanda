@@ -1,8 +1,11 @@
-//
-// Created by shengym on 2019-07-07.
-//
+/*
+ * @Author: Sanjay Zhong 
+ * @Date: 2020-03-18 20:39:33 
+ * @Last Modified by: Sanjay Zhong
+ * @Last Modified time: 2020-03-18 21:03:02
+ */
 
-#include "lib/common.h"
+#include "../header/common.h"
 
 static int count;
 
@@ -24,12 +27,14 @@ int main(int argc, char **argv) {
 
     int rt1 = bind(listenfd, (struct sockaddr *) &server_addr, sizeof(server_addr));
     if (rt1 < 0) {
-        error(1, errno, "bind failed ");
+        perror("bind failed ");
+        exit(1);
     }
 
     int rt2 = listen(listenfd, LISTENQ);
     if (rt2 < 0) {
-        error(1, errno, "listen failed ");
+        perror("listen failed ");
+        exit(1);
     }
 
     signal(SIGPIPE, SIG_IGN);
@@ -39,7 +44,8 @@ int main(int argc, char **argv) {
     socklen_t client_len = sizeof(client_addr);
 
     if ((connfd = accept(listenfd, (struct sockaddr *) &client_addr, &client_len)) < 0) {
-        error(1, errno, "bind failed ");
+        perror("bind failed ");
+        exit(1);
     }
 
     char message[MAXLINE];
@@ -48,9 +54,11 @@ int main(int argc, char **argv) {
     for (;;) {
         int n = read(connfd, message, MAXLINE);
         if (n < 0) {
-            error(1, errno, "error read");
+            perror("error read");
+            exit(1);
         } else if (n == 0) {
-            error(1, 0, "client closed \n");
+            printf("client closed \n");
+            exit(1);
         }
         message[n] = 0;
         printf("received %d bytes: %s\n", n, message);

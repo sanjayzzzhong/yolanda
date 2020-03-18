@@ -1,13 +1,12 @@
-//
-// Created by shengym on 2019-07-12.
-//
-#include "lib/common.h"
+
+#include "../header/common.h"
 
 #define    MAXLINE     4096
 
 int main(int argc, char **argv) {
     if (argc != 2) {
-        error(1, 0, "usage: udpclient1 <IPaddress>");
+        printf("usage: udpclient <IPaddress>\n");
+        exit(1);
     }
 
     int socket_fd;
@@ -21,8 +20,10 @@ int main(int argc, char **argv) {
 
     socklen_t server_len = sizeof(server_addr);
 
+    // udp 使用connect
     if (connect(socket_fd, (struct sockaddr *) &server_addr, server_len)) {
-        error(1, errno, "connect failed");
+        perror("connect failed");
+        exit(1);
     }
 
     struct sockaddr *reply_addr;
@@ -39,17 +40,24 @@ int main(int argc, char **argv) {
         }
 
         printf("now sending %s\n", send_line);
-        size_t rt = sendto(socket_fd, send_line, strlen(send_line), 0, (struct sockaddr *) &server_addr, server_len);
+        // 使用sendto的话最好把地址清零
+        // 推荐使用send、write和recv、read
+        //size_t rt = sendto(socket_fd, send_line, strlen(send_line), 0, (struct sockaddr *) &server_addr, server_len);
+        size_t rt = send(socket_fd, send_line, strlen(send_line), 0);
         if (rt < 0) {
-            error(1, errno, "sendto failed");
+            perror("sendto failed");
+            exit(1);
         }
         printf("send bytes: %zu \n", rt);
 
         len = 0;
         recv_line[0] = 0;
-        n = recvfrom(socket_fd, recv_line, MAXLINE, 0, reply_addr, &len);
-        if (n < 0)
-            error(1, errno, "recvfrom failed");
+        // n = recvfrom(socket_fd, recv_line, MAXLINE, 0, reply_addr, &len);
+        n = recv(socket_fd, recv_line, MAXLINE, 0);
+        if (n < 0) {
+            perror("recvfrom error");
+            exit(1);
+        }
         recv_line[n] = 0;
         fputs(recv_line, stdout);
         fputs("\n", stdout);
