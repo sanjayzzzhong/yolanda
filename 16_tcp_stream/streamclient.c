@@ -1,8 +1,16 @@
-#include "lib/common.h"
+/*
+ * @Author: Sanjay Zhong 
+ * @Date: 2020-03-18 22:30:00 
+ * @Last Modified by:   Sanjay Zhong 
+ * @Last Modified time: 2020-03-18 22:30:00 
+ */
+
+#include "../header/common.h"
 
 int main(int argc, char **argv) {
     if (argc != 2) {
-        error(1, 0, "usage: tcpclient <IPaddress>");
+        printf("usage: tcpclient <IPaddress>\n");
+        exit(1);
     }
 
     int socket_fd;
@@ -17,7 +25,8 @@ int main(int argc, char **argv) {
     socklen_t server_len = sizeof(server_addr);
     int connect_rt = connect(socket_fd, (struct sockaddr *) &server_addr, server_len);
     if (connect_rt < 0) {
-        error(1, errno, "connect failed ");
+        perror("connect failed ");
+        exit(1);
     }
 
     struct {
@@ -32,11 +41,13 @@ int main(int argc, char **argv) {
     while (fgets(message.data, sizeof(message.data), stdin) != NULL) {
         n = strlen(message.data);
         message.message_length = htonl(n);
+        // 这里也转为网络字节序把？
         message.message_type = 1;
         if (send(socket_fd, (char *) &message, sizeof(message.message_length) + sizeof(message.message_type) + n, 0) <
-            0)
-            error(1, errno, "send failure");
-
+            0) {
+                perror("send error");
+                exit(1);
+            }
     }
     exit(0);
 }

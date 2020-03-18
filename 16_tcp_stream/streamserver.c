@@ -1,8 +1,11 @@
-//
-// Created by shengym on 2019-07-07.
-//
+/*
+ * @Author: Sanjay Zhong 
+ * @Date: 2020-03-18 22:33:57 
+ * @Last Modified by: Sanjay Zhong
+ * @Last Modified time: 2020-03-18 22:45:31
+ */
 
-#include "lib/common.h"
+#include "../header/common.h"
 
 static int count;
 
@@ -27,14 +30,17 @@ int main(int argc, char **argv) {
 
     int rt1 = bind(listenfd, (struct sockaddr *) &server_addr, sizeof(server_addr));
     if (rt1 < 0) {
-        error(1, errno, "bind failed ");
+        perror("bind error");
+        exit(1);
     }
 
     int rt2 = listen(listenfd, LISTENQ);
     if (rt2 < 0) {
-        error(1, errno, "listen failed ");
+        perror("listen failed ");
+        exit(1);
     }
 
+    // 管道破裂
     signal(SIGPIPE, SIG_IGN);
 
     int connfd;
@@ -42,7 +48,8 @@ int main(int argc, char **argv) {
     socklen_t client_len = sizeof(client_addr);
 
     if ((connfd = accept(listenfd, (struct sockaddr *) &client_addr, &client_len)) < 0) {
-        error(1, errno, "bind failed ");
+        perror("accept failed ");
+        exit(1);
     }
 
     char buf[128];
@@ -51,7 +58,8 @@ int main(int argc, char **argv) {
     while (1) {
         int n = read_message(connfd, buf, sizeof(buf));
         if (n < 0) {
-            error(1, errno, "error read message");
+            perror("error read message");
+            exit(1);
         } else if (n == 0) {
             error(1, 0, "client closed \n");
         }
