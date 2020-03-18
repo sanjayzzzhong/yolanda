@@ -1,8 +1,5 @@
-//
-// Created by shengym on 2019-07-07.
-//
 
-#include "lib/common.h"
+#include "../header/common.h"
 #include "message_objecte.h"
 
 static int count;
@@ -15,7 +12,8 @@ static void sig_int(int signo) {
 
 int main(int argc, char **argv) {
     if (argc != 2) {
-        error(1, 0, "usage: tcpsever <sleepingtime>");
+        printf("usage: tcpsever <sleepingtime>\n");
+        exit(1);
     }
 
     int sleepingTime = atoi(argv[1]);
@@ -31,12 +29,14 @@ int main(int argc, char **argv) {
 
     int rt1 = bind(listenfd, (struct sockaddr *) &server_addr, sizeof(server_addr));
     if (rt1 < 0) {
-        error(1, errno, "bind failed ");
+        perror("bind failed ");
+        exit(1);
     }
 
     int rt2 = listen(listenfd, LISTENQ);
     if (rt2 < 0) {
-        error(1, errno, "listen failed ");
+        perror("listen failed ");
+        exit(1);
     }
 
     signal(SIGINT, sig_int);
@@ -47,7 +47,8 @@ int main(int argc, char **argv) {
     socklen_t client_len = sizeof(client_addr);
 
     if ((connfd = accept(listenfd, (struct sockaddr *) &client_addr, &client_len)) < 0) {
-        error(1, errno, "bind failed ");
+        perror("accept failed ");
+        exit(1);
     }
 
     messageObject message;
@@ -56,14 +57,17 @@ int main(int argc, char **argv) {
     for (;;) {
         int n = read(connfd, (char *) &message, sizeof(messageObject));
         if (n < 0) {
-            error(1, errno, "error read");
+            perror("error read");
+            exit(1);
         } else if (n == 0) {
-            error(1, 0, "client closed \n");
+            printf("client closed \n");
+            exit(1);
         }
 
-        printf("received %d bytes\n", n, message);
+        printf("received %d bytes: %s\n", n, message.data);
         count++;
 
+        // 网络字节序转为本机字节序
         switch (ntohl(message.type)) {
             case MSG_TYPE1 :
                 printf("process  MSG_TYPE1 \n");
@@ -76,15 +80,16 @@ int main(int argc, char **argv) {
             case MSG_PING: {
                 messageObject pong_message;
                 pong_message.type = MSG_PONG;
+                // 休眠这么久才发送
                 sleep(sleepingTime);
                 ssize_t rc = send(connfd, (char *) &pong_message, sizeof(pong_message), 0);
                 if (rc < 0)
-                    error(1, errno, "send failure");
+                    perror("send failure");
                 break;
             }
 
             default :
-                error(1, 0, "unknown message type (%d)\n", ntohl(message.type));
+                printf("unknown message type (%d)\n", ntohl(message.type));
         }
 
     }

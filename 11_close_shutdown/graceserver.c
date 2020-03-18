@@ -2,7 +2,7 @@
 // Created by shengym on 2019-07-07.
 //
 
-#include "lib/common.h"
+#include "../header/common.h"
 
 static int count;
 
@@ -24,15 +24,19 @@ int main(int argc, char **argv) {
 
     int rt1 = bind(listenfd, (struct sockaddr *) &server_addr, sizeof(server_addr));
     if (rt1 < 0) {
-        error(1, errno, "bind failed ");
+        perror("bind failed ");
+        exit(1);
     }
 
     int rt2 = listen(listenfd, LISTENQ);
     if (rt2 < 0) {
-        error(1, errno, "listen failed ");
+        perror("listen failed ");
+        exit(1);
     }
 
+    // 注册信号函数
     signal(SIGINT, sig_int);
+    // 遇到pipe，默认处理
     signal(SIGPIPE, SIG_DFL);
 
     int connfd;
@@ -40,7 +44,8 @@ int main(int argc, char **argv) {
     socklen_t client_len = sizeof(client_addr);
 
     if ((connfd = accept(listenfd, (struct sockaddr *) &client_addr, &client_len)) < 0) {
-        error(1, errno, "bind failed ");
+        perror("bind failed ");
+        exit(1);
     }
 
     char message[MAXLINE];
@@ -49,9 +54,11 @@ int main(int argc, char **argv) {
     for (;;) {
         int n = read(connfd, message, MAXLINE);
         if (n < 0) {
-            error(1, errno, "error read");
+            perror("error read");
+            exit(1);
         } else if (n == 0) {
-            error(1, 0, "client closed \n");
+            printf("client closed\n");
+            exit(1);
         }
         message[n] = 0;
         printf("received %d bytes: %s\n", n, message);
@@ -63,9 +70,10 @@ int main(int argc, char **argv) {
         sleep(5);
 
         int write_nc = send(connfd, send_line, strlen(send_line), 0);
-        printf("send bytes: %zu \n", write_nc);
+        printf("send bytes: %d \n", write_nc);
         if (write_nc < 0) {
-            error(1, errno, "error write");
+            perror("error write");
+            exit(1);
         }
     }
 
