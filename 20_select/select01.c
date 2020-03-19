@@ -1,7 +1,12 @@
-#include "lib/common.h"
+/*
+ * @Author: Sanjay Zhong 
+ * @Date: 2020-03-19 15:47:39 
+ * @Last Modified by:   Sanjay Zhong 
+ * @Last Modified time: 2020-03-19 15:47:39 
+ */
+#include "../header/common.h"
 
 #define  MAXLINE     1024
-
 
 int main(int argc, char **argv) {
     if (argc != 2) {
@@ -14,6 +19,7 @@ int main(int argc, char **argv) {
 
     fd_set readmask;
     fd_set allreads;
+
     FD_ZERO(&allreads);
     FD_SET(0, &allreads);
     FD_SET(socket_fd, &allreads);

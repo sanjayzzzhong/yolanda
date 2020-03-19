@@ -102,7 +102,7 @@ int main(int argc, char **argv) {
     for (i = 0; i < FD_INIT_SIZE; ++i) {
         buffer[i] = alloc_Buffer();
     }
-
+    // 监听fd设为nonblock
     listen_fd = tcp_nonblocking_server_listen(SERV_PORT);
 
     fd_set readset, writeset, exset;
@@ -147,6 +147,7 @@ int main(int argc, char **argv) {
                 error(1, 0, "too many connections");
                 close(fd);
             } else {
+                // accept fd也设为nonblock
                 make_nonblocking(fd);
                 if (buffer[fd]->connect_fd == 0) {
                     buffer[fd]->connect_fd = fd;

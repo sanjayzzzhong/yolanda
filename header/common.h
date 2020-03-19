@@ -1,3 +1,9 @@
+/*
+ * @Author: Sanjay Zhong 
+ * @Date: 2020-03-19 15:47:18 
+ * @Last Modified by: Sanjay Zhong
+ * @Last Modified time: 2020-03-19 16:12:24
+ */
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
@@ -19,6 +25,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <errno.h>
+#include <poll.h>
 
 
 
@@ -27,5 +34,8 @@
 
 #include "log.h"
 #include "read.h"
+
+int tcp_server_listen(int port) ;
+
 
 #endif
