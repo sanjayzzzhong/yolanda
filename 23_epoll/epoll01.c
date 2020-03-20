@@ -27,15 +27,18 @@ int main(int argc, char **argv) {
     }
 
     event.data.fd = listen_fd;
+    // 监听读， 边缘触发模式
     event.events = EPOLLIN | EPOLLET;
     if (epoll_ctl(efd, EPOLL_CTL_ADD, listen_fd, &event) == -1) {
         error(1, errno, "epoll_ctl add listen fd failed");
     }
 
     /* Buffer where events are returned */
+    //calloc分配内存之后，会初始化为0； malloc不会
     events = calloc(MAXEVENTS, sizeof(event));
 
     while (1) {
+        // -1 代表阻塞
         n = epoll_wait(efd, events, MAXEVENTS, -1);
         printf("epoll_wait wakeup\n");
         for (i = 0; i < n; i++) {

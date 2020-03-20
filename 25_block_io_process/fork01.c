@@ -43,6 +43,10 @@ void child_run(int fd) {
 
 void sigchld_handler(int sig) {
     // 如果有子进程信号过来，回收， WNOHANG表示不阻塞
+    // -1 表示等待第一个终止的子进程
+    // 使用while的原因是，如果有多个进程死掉，同时发来SIGCHILD信号，只能处理一个。
+    // waitpid的返回值：如果阻塞：错误返回0，否则返会子进程pid
+    // 不阻塞的话，没有进程死掉，返回0，其他情况和阻塞一样
     while (waitpid(-1, 0, WNOHANG) > 0);
     return;
 }
@@ -52,6 +56,7 @@ int main(int c, char **v) {
     // 注册子进程信号回收函数
     signal(SIGCHLD, sigchld_handler);
     while (1) {
+        // 通用地址存储结构
         struct sockaddr_storage ss;
         socklen_t slen = sizeof(ss);
         int fd = accept(listener_fd, (struct sockaddr *) &ss, &slen);
@@ -59,8 +64,9 @@ int main(int c, char **v) {
             error(1, errno, "accept failed");
             exit(1);
         }
-
+        // 子进程
         if (fork() == 0) {
+            // 关闭listener_fd
             close(listener_fd);
             child_run(fd);
             exit(0);

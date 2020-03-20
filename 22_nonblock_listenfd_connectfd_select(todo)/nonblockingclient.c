@@ -27,8 +27,10 @@ int main(int argc, char **argv) {
     }
 
     struct linger ling;
-    ling.l_onoff = 1;
-    ling.l_linger = 0;
+    ling.l_onoff = 1;   // l_onoff = 1
+    ling.l_linger = 0;  // l_linger = 0
+    // 下面设置close的关闭方式，即优雅地关闭还是粗暴的关闭。1，0表示关闭徘徊方式，调用close直立刻返回，不发送
+    // 缓冲区未完成发送的消息，直接发送RST标识位
     setsockopt(socket_fd, SOL_SOCKET, SO_LINGER, &ling, sizeof(ling));
     close(socket_fd);
 
