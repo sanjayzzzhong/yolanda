@@ -31,6 +31,8 @@
 
 #include <sys/un.h> // for sockaddr_un
 
+#include <pthread.h>
+
 
 #include "log.h"
 #include "read.h"

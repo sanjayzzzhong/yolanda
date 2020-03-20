@@ -3,6 +3,7 @@
 extern void loop_echo(int);
 
 void thread_run(void *arg) {
+    // 线程分离也可以在子线程中进行
     pthread_detach(pthread_self());
     int fd = (int) arg;
     loop_echo(fd);
