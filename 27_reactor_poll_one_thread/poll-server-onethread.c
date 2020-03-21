@@ -1,3 +1,10 @@
+/*
+ * @Author: Sanjay Zhong 
+ * @Date: 2020-03-21 19:57:19 
+ * @Last Modified by: Sanjay Zhong
+ * @Last Modified time: 2020-03-21 19:58:35
+ * @Description: 使用poll单线程处理所有I/O事件
+ */
 #include <lib/acceptor.h>
 #include "lib/common.h"
 #include "lib/event_loop.h"
@@ -48,12 +55,13 @@ int main(int c, char **v) {
     //主线程event_loop
     struct event_loop *eventLoop = event_loop_init();
 
-    //初始化acceptor
+    //初始化acceptor, 用来监听在某个端口
     struct acceptor *acceptor = acceptor_init(SERV_PORT);
 
     //初始tcp_server，可以指定线程数目，如果线程是0，就只有一个线程，既负责acceptor，也负责I/O
     struct TCPserver *tcpServer = tcp_server_init(eventLoop, acceptor, onConnectionCompleted, onMessage,
                                                   onWriteCompleted, onConnectionClosed, 0);
+    // 开始监听                                              
     tcp_server_start(tcpServer);
 
     // main thread for acceptor
